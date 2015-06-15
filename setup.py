@@ -43,7 +43,7 @@ BOOST_MT = is_osx
 BOOST_STATIC_LINK = False
 PYTHON_HOME = None
 V8_HOME = None
-V8_SVN_URL = "http://v8.googlecode.com/svn/trunk/"
+V8_SVN_URL = "https://v8.googlecode.com/svn/trunk/"
 V8_SVN_REVISION = None
 
 v8_svn_rev_file = os.path.normpath(os.path.join(os.path.dirname(__file__), 'REVISION'))
@@ -300,7 +300,8 @@ else:
 arch = 'x64' if is_64bit else 'arm' if is_arm else 'ia32'
 mode = 'debug' if DEBUG else 'release'
 
-libraries += ['v8_base.' + arch, 'v8_snapshot' if V8_SNAPSHOT_ENABLED else ('v8_nosnapshot.' + arch)]
+if not is_osx:
+    libraries += ['v8_base.' + arch, 'v8_snapshot' if V8_SNAPSHOT_ENABLED else ('v8_nosnapshot.' + arch)]
 
 if is_winnt:
     library_path = icu_path = "%s/build/%s/lib/" % (V8_HOME, mode)
@@ -520,7 +521,7 @@ def generate_probes():
         print("INFO: automatic make the build folder: %s" % build_path)
 
         try:
-            os.makedirs(build_path, 0755)
+            os.makedirs(build_path, 0o755)
         except os.error as ex:
             print("WARN: fail to create the build folder, %s" % ex)
 
